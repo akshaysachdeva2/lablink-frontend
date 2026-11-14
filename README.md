@@ -1,224 +1,136 @@
-# LabLink – Diagnostic Test Comparison & Booking Platform
+# LabLink — Diagnostic Test Comparison & Booking Platform
 
-LabLink is a web-based diagnostic test comparison and appointment booking application that helps users explore medical tests, compare prices across diagnostic laboratories, and book appointments conveniently.
+LabLink is a full-stack web application for exploring diagnostic tests, comparing prices across laboratories, and booking appointments. It brings test discovery, lab-wise pricing, booking management, and AI-assisted report summaries into one interface.
 
-The application provides a centralized platform where users can browse available tests, view laboratory-wise pricing and availability, register or log in, and manage their bookings.
+**Live application:** https://lablink-frontend-lime.vercel.app/  
+**Backend API:** https://lablink-backend-cp9v.onrender.com/api  
+**Backend health check:** https://lablink-backend-cp9v.onrender.com/api/health
 
-## Key Features
+> **Demo-data notice:** Laboratory listings, prices, and availability in the seeded database are demonstration data. They are not live quotes or verified listings from real diagnostic providers.
 
-- **Diagnostic Test Search:** Browse and search available diagnostic tests.
-- **Lab Price Comparison:** Compare test prices across multiple partner laboratories.
-- **Test Details:** View detailed information about tests, laboratory pricing, and availability.
-- **User Authentication:** Register and log in securely using JWT-based authentication.
-- **Appointment Booking:** Book diagnostic tests through authenticated user accounts.
-- **Booking History:** View previously created bookings.
-- **Booking Management:** Manage existing bookings through the application.
+## Features
+
+- **Diagnostic test discovery:** Browse and search the available diagnostic test catalogue.
+- **Lab-wise price comparison:** Compare listed prices and availability for a test across laboratories.
+- **Test details:** View information about a selected test and its laboratory options.
+- **Account authentication:** Register and sign in to access account-specific booking features.
+- **Appointment booking:** Select a laboratory, collection mode, date, and time slot, then submit a booking.
+- **Home collection support:** Choose home collection when the selected laboratory supports it; otherwise use lab visit.
+- **Booking history:** View bookings associated with the signed-in account.
+- **Booking cancellation:** Cancel an existing booking through the booking interface.
+- **AI report summary:** Upload a PDF, JPG, or PNG medical report and request an AI-generated explanation. The feature requires sign-in and explicit consent before the file is submitted. The summary is educational and is not a medical diagnosis.
+- **Protected user flows:** Booking and report-summary actions require authentication.
 
 ## Technology Stack
 
-| Category | Technology |
+| Layer | Technologies |
 |---|---|
-| Frontend | React |
-| Programming Language | TypeScript |
-| Build Tool | Vite |
+| Frontend | React 18, TypeScript, Vite |
 | Routing | React Router |
-| Styling | CSS |
-| HTTP Client | Axios |
-| Backend | Node.js, Express, TypeScript |
+| UI icons | Lucide React |
+| API communication | Axios |
+| Backend | Node.js, Express.js, TypeScript |
 | Database | PostgreSQL |
-| Authentication | JWT, bcrypt |
+| Authentication | JSON Web Tokens (JWT), bcrypt |
+| AI integration | Google Gemini API |
 
-## Project Requirements
+## Repositories
 
-Make sure the following software is installed:
+- **Frontend:** https://github.com/akshaysachdeva2/lablink-frontend
+- **Backend:** https://github.com/akshaysachdeva2/lablink-backend-
+
+## Run Locally
+
+The frontend and backend run in separate terminals.
+
+### Prerequisites
 
 - Node.js 20 or newer
 - npm
-- Git (optional, for version control)
-- Visual Studio Code (recommended)
+- PostgreSQL
+- Git
 
-The LabLink backend must be running separately.
+### 1. Clone the repositories
 
-## Project Setup
-
-### 1. Clone the Repository
+Frontend:
 
 ```bash
-git clone YOUR_FRONTEND_REPOSITORY_URL
-```
-
-Navigate into the project directory:
-
-```bash
-cd lablink-typescript
-```
-
-### 2. Install Dependencies
-
-```bash
+git clone https://github.com/akshaysachdeva2/lablink-frontend.git
+cd lablink-frontend
 npm install
 ```
 
-### 3. Configure Environment Variables
+Backend setup is documented in the [backend README](https://github.com/akshaysachdeva2/lablink-backend-#readme).
 
-Create a `.env` file in the frontend root directory.
+### 2. Configure the frontend
 
-Add the following configuration:
+Create a `.env` file in the frontend project root:
 
 ```env
 VITE_API_BASE_URL=http://localhost:5001/api
 ```
 
-Alternatively, copy `.env.example` to `.env` and verify the API URL.
+For production, the deployed frontend is configured to use the deployed backend API. Do not commit private credentials or secret values.
 
-**Important:** Never commit private credentials, passwords, API keys, or secret tokens to GitHub.
+### 3. Start the frontend
 
-### 4. Start the Frontend
-
-Run the development server:
+From the frontend directory:
 
 ```bash
 npm run dev
 ```
 
-Open the local URL provided by Vite, normally:
+Open the local URL printed by Vite (normally http://localhost:5173).
 
-```text
-http://localhost:5173
-```
+### 4. Start the backend
 
-## Running the Backend
-
-The frontend requires the LabLink backend to be running.
-
-Open a separate terminal and navigate to the backend project:
-
-```bash
-cd lablink-backend
-```
-
-Install the backend dependencies if you have not already:
-
-```bash
-npm install
-```
-
-Configure the backend environment variables and PostgreSQL database according to the backend project's README.
-
-Run the backend:
+In a separate terminal, start the backend by following its setup instructions, then run:
 
 ```bash
 npm run dev
 ```
 
-The backend API runs at:
+The local API is expected at `http://localhost:5001/api`.
 
-```text
-http://localhost:5001/api
-```
+## Useful Commands
 
-You can check the backend health endpoint at:
+Frontend:
 
-```text
-http://localhost:5001/api/health
-```
-
-### Application Configuration
-
-| Component | Local URL |
+| Command | Purpose |
 |---|---|
-| Frontend | http://localhost:5173 |
-| Backend API | http://localhost:5001/api |
-| Backend Health Check | http://localhost:5001/api/health |
+| `npm install` | Install dependencies |
+| `npm run dev` | Start the Vite development server |
+| `npm run build` | Run TypeScript project builds and create the production bundle |
+| `npm run preview` | Preview the production build locally |
 
-The backend CORS configuration allows requests from the Vite development URL.
+## Application URLs
 
-## Database
+| Service | URL |
+|---|---|
+| Production frontend | https://lablink-frontend-lime.vercel.app/ |
+| Production API | https://lablink-backend-cp9v.onrender.com/api |
+| API health check | https://lablink-backend-cp9v.onrender.com/api/health |
+| Local frontend | http://localhost:5173 |
+| Local API | http://localhost:5001/api |
 
-LabLink uses **PostgreSQL** as its relational database.
+## Notes on AI Report Summaries and Privacy
 
-The database stores application information such as:
+The report-summary workflow accepts PDF, JPEG, and PNG uploads. The user must be signed in and provide consent before the report is sent to the backend for processing with Google Gemini. The backend enforces a 10 MB upload limit and validates supported file types. Do not upload sensitive medical documents unless you understand and consent to how the feature processes them. AI-generated content can be incomplete or incorrect; it must not replace advice from a qualified healthcare professional.
 
-- User accounts
-- Diagnostic laboratories
-- Available diagnostic tests
-- Laboratory-wise test prices
-- Appointment bookings
+## Current Demo Dataset
 
-The backend project contains the SQL files required to initialize and seed the database.
+The backend seed data currently contains 10 diagnostic tests, 20 laboratories, and approximately 200 lab-price records. Availability and prices are sample values for demonstrating the comparison and booking workflows.
 
-The demonstration database currently includes six sample diagnostic tests and six sample partner laboratories.
+## Build
 
-**Note:** The included laboratory and test records are demonstration data and do not represent endorsements of actual diagnostic providers.
-
-## Build for Production
-
-To verify that the frontend compiles successfully, run:
+To create a production frontend build:
 
 ```bash
 npm run build
 ```
 
-Vite generates the production build in the `dist` directory.
+The generated static assets are placed in the `dist` directory.
 
-## Troubleshooting
+## Project Scope
 
-**1. Backend API is not responding**
-
-- Ensure the backend server is running on port `5001`.
-- Check the backend health endpoint.
-- Verify the `VITE_API_BASE_URL` value in `.env`.
-
-**2. Dependencies are missing**
-
-Run:
-
-```bash
-npm install
-```
-
-**3. Environment variable changes are not reflected**
-
-Stop the Vite development server and restart it:
-
-```bash
-npm run dev
-```
-
-**4. CORS errors**
-
-Verify that the backend allows requests from:
-
-```text
-http://localhost:5173
-```
-
-**5. Database connection errors**
-
-- Ensure PostgreSQL is running.
-- Verify the backend database credentials.
-- Confirm that the required SQL initialization and seed scripts have been executed.
-
-## Future Enhancements
-
-Potential improvements for future versions include:
-
-- Online payment integration.
-- Email and SMS booking notifications.
-- Advanced filtering and sorting.
-- Real-time appointment availability.
-- Admin dashboard for laboratory management.
-- Responsive UI improvements.
-
-## Project Purpose
-
-LabLink was developed as a full-stack application to demonstrate practical skills in frontend development, backend API integration, authentication, relational database management, and appointment booking workflows.
-
-The project combines React, TypeScript, Node.js, Express, and PostgreSQL to create an integrated diagnostic test comparison and booking experience.
-
----
-
-**Project:** LabLink  
-**Frontend:** React + TypeScript + Vite  
-**Backend:** Node.js + Express + TypeScript  
-**Database:** PostgreSQL
+LabLink demonstrates a practical full-stack workflow: a typed React frontend communicates with REST APIs, authenticated users can manage bookings, PostgreSQL stores application data, and a Gemini-powered endpoint provides AI-assisted report summaries.
