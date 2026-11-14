@@ -7,6 +7,7 @@ import {
   Routes,
   useNavigate,
   useParams,
+  useLocation,
 } from 'react-router-dom';
 
 import {
@@ -29,6 +30,7 @@ import {
 import { Layout, PageTitle } from './components/Layout';
 import TestCard from './components/TestCard';
 import LabCard from './components/LabCard';
+import ReportSummary from './components/ReportSummary';
 
 import { api, getApiError } from './api/client';
 import {
@@ -619,12 +621,16 @@ function BookingPage() {
   const [error, setError] = useState('');
 
   const [mode, setMode] = useState<'Home collection' | 'Lab visit'>(
-    'Home collection'
+    'Lab visit'
   );
 
-  const [date, setDate] = useState(
-    new Date().toISOString().slice(0, 10)
-  );
+  const getLocalDate = () => {
+    const today = new Date();
+    const local = new Date(today.getTime() - today.getTimezoneOffset() * 60000);
+    return local.toISOString().slice(0, 10);
+  };
+
+  const [date, setDate] = useState(getLocalDate);
   const [time, setTime] = useState('08:00 AM');
 
   const [name, setName] = useState('');
@@ -643,7 +649,9 @@ function BookingPage() {
       .then(([loadedTest, loadedLabs]) => {
         if (active) {
           setTest(loadedTest);
-          setLab(loadedLabs.find(item => item.id === labId) || null);
+          const selectedLab = loadedLabs.find(item => item.id === labId) || null;
+          setLab(selectedLab);
+          setMode(selectedLab?.homeCollection ? 'Home collection' : 'Lab visit');
         }
       })
       .catch(err => {
@@ -786,7 +794,7 @@ function BookingPage() {
             <input
               required
               type="date"
-              min={new Date().toISOString().slice(0, 10)}
+              min={getLocalDate()}
               value={date}
               onChange={event => setDate(event.target.value)}
             />
@@ -1063,6 +1071,7 @@ function BookingsPage() {
 // Login and registration
 function AuthPage({ register = false }: { register?: boolean }) {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -1098,7 +1107,8 @@ function AuthPage({ register = false }: { register?: boolean }) {
       // Notify the navbar that the user has signed in
       window.dispatchEvent(new Event('lablink-auth-changed'));
 
-      navigate('/bookings');
+      const returnTo = (location.state as { from?: string } | null)?.from;
+      navigate(returnTo || '/bookings', { replace: true });
     } catch (err) {
       setError(getApiError(err, 'Authentication failed.'));
     } finally {
@@ -1228,6 +1238,7 @@ export default function App() {
           element={<BookingPage />}
         />
         <Route path="/bookings" element={<BookingsPage />} />
+        <Route path="/report-summary" element={<ReportSummary />} />
         <Route path="/signin" element={<AuthPage />} />
         <Route
           path="/register"
