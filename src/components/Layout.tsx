@@ -109,6 +109,13 @@ export function Layout() {
             >
               My bookings
             </NavLink>
+
+            <NavLink
+              to="/report-summary"
+              onClick={() => setMenuOpen(false)}
+            >
+              AI report summary
+            </NavLink>
           </nav>
 
           {/* Account actions */}
