@@ -42,9 +42,7 @@ export default function ReportSummary() {
         success: boolean;
         summary: string;
       }>('/reports/summarize', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+        timeout: 120000
       });
 
       setSummary(response.data.summary);
